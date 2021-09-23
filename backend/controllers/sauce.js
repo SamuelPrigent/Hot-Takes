@@ -20,7 +20,7 @@ exports.createSauce = async (req, res, next) => {
 };
 // ?
 /* 
-const thing = new Thing ({
+const sauce = new Sauce ({
 name : req.body.name,
 heat : req.body.heat,
 description: req.body.description,
@@ -47,7 +47,7 @@ exports.getOneSauce = async (req, res, next) => {
 exports.modifySauce = (req, res, next) => {
   const sauceObject = req.file ?
     {
-      ...JSON.parse(req.body.thing),
+      ...JSON.parse(req.body.sauce), // fonctionne avec sauce et thing ?
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
     Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id }) 
@@ -58,8 +58,8 @@ exports.modifySauce = (req, res, next) => {
 // Delete 1 - OK
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
-    .then(thing => {
-      const filename = thing.imageUrl.split('/images/')[1];
+    .then(sauce => {
+      const filename = sauce.imageUrl.split('/images/')[1];
       fs.unlink(`images/${filename}`, () => {
         Sauce.deleteOne({ _id: req.params.id })
           .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
@@ -111,25 +111,25 @@ exports.getAllSauces = async (req, res, next) => {
 /* 1ère versions des requetes sans mudler 
 
 // Post 1
-exports.createThing = async (req, res, next) => {
+exports.createSauce = async (req, res, next) => {
     
-  const thing = new Thing({
+  const sauce = new Sauce({
     title: req.body.title,
     description: req.body.description,
     imageUrl: req.body.imageUrl,
     price: req.body.price,
     userId: req.body.userId
   });
-  await thing.save()
+  await sauce.save()
   .then(() => {res.status(201).json({message: 'Post saved successfully!'});})
   .catch((error) => {res.status(500).json({error: error});});
   
 };
 
 // Modify 1
-exports.modifyThing = async (req, res, next) => {
+exports.modifySauce = async (req, res, next) => {
     
-  const thing = new Thing({
+  const sauce = new Sauce({
     _id: req.params.id,
     title: req.body.title,
     description: req.body.description,
@@ -137,18 +137,18 @@ exports.modifyThing = async (req, res, next) => {
     price: req.body.price,
     userId: req.body.userId
   });
-  await Thing.updateOne({_id: req.params.id}, thing)
-  .then(() => {res.status(201).json({message: 'Thing updated successfully!'});})
+  await Sauce.updateOne({_id: req.params.id}, sauce)
+  .then(() => {res.status(201).json({message: 'Sauce updated successfully!'});})
   .catch((error) => {res.status(400).json({error: error});});
 };
 
 // Delete 1
-exports.deleteThing = (req, res, next) => {
-  Thing.findOne({ _id: req.params.id })
-    .then(thing => {
-      const filename = thing.imageUrl.split('/images/')[1];
+exports.deleteSauce = (req, res, next) => {
+  Sauce.findOne({ _id: req.params.id })
+    .then(sauce => {
+      const filename = sauce.imageUrl.split('/images/')[1];
       fs.unlink(`images/${filename}`, () => {
-        Thing.deleteOne({ _id: req.params.id })
+        Sauce.deleteOne({ _id: req.params.id })
           .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
           .catch(error => res.status(400).json({ error }));
       });

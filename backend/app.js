@@ -5,7 +5,7 @@ const express = require("express"); // importe express
 const path = require('path'); // importe path des images
 
 // Import des routes
-const stuffRoutes = require ("./routes/stuff")
+const stuffRoutes = require ("./routes/sauce")
 const userRoutes = require('./routes/user');
 
 // Avant utilisation de app qui utilisera express à chaque fois
