@@ -1,52 +1,67 @@
 // Controllers du Stuff
 
-// import du Thing uniquement dans controllers
-const Thing = require('../models/thing');
-const fs = require('fs'); // import pour delete un objet et delete des fichiers locaux
+// import modele uniquement dans controllers
+const fs = require('fs'); // fs permet delete img local pendant suppression objet
+const Sauce = require('../models/sauce');
 
 // Les Controllers ------------------------------------------------------------------------------------
 
-// Post 1 - with img support
-exports.createThing = (req, res, next) => {
-  const thingObject = JSON.parse(req.body.thing); //  transforme en objet la chaine de caractère 
-  delete thingObject._id; 
-  const thing = new Thing({
-    ...thingObject,
-    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}` // l'url est personnalisé
-  });
-  thing.save()
+// Post 1 - 
+exports.createSauce = async (req, res, next) => {
+  const sauceObject = JSON.parse(req.body.sauce); // thing ou sauce ? 
+  delete sauceObject._id;
+  const sauce = new Sauce({
+    ...sauceObject, 
+    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`, // url img local
+  }); 
+  await sauce.save()
     .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
     .catch(error => res.status(400).json({ error }));
 };
+// ?
+/* 
+const thing = new Thing ({
+name : req.body.name,
+heat : req.body.heat,
+description: req.body.description,
+imageUrl: req.body.imageUrl,
+});
+*/
 
-// Get 1
-exports.getOneThing = async (req, res, next) => {
-    
-  await Thing.findOne({_id: req.params.id})
-  .then((thing) => {res.status(200).json(thing);})
+// ??
+/* 
+  let usersLiked = [],
+  usersDisliked = [],
+  likes = usersLiked.length,
+  dislikes = usersDisliked.length,
+  */
+
+// Get 1 - OK
+exports.getOneSauce = async (req, res, next) => {
+  await Sauce.findOne({_id: req.params.id})
+  .then((sauce) => {res.status(200).json(sauce);})
   .catch((error) => {res.status(404).json({error: error});});
-  
 };
 
 // Modify 1 - Put
-exports.modifyThing = (req, res, next) => {
-  const thingObject = req.file ?
+exports.modifySauce = (req, res, next) => {
+  const sauceObject = req.file ?
     {
       ...JSON.parse(req.body.thing),
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
-  Thing.updateOne({ _id: req.params.id }, { ...thingObject, _id: req.params.id }) 
+    Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id }) 
     .then(() => res.status(200).json({ message: 'Objet modifié !'}))
     .catch(error => res.status(400).json({ error }));
 };
 
 // Delete 1 
-exports.deleteThing = (req, res, next) => {
-  Thing.findOne({ _id: req.params.id })
+exports.deleteSauce = (req, res, next) => {
+  Sauce.findOne({ _id: req.params.id })
     .then(thing => {
       const filename = thing.imageUrl.split('/images/')[1];
       fs.unlink(`images/${filename}`, () => {
-        Thing.deleteOne({ _id: req.params.id })
+        Sauce.deleteOne({ _id: req.params.id })
           .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
           .catch(error => res.status(400).json({ error }));
       });
@@ -54,15 +69,15 @@ exports.deleteThing = (req, res, next) => {
     .catch(error => res.status(500).json({ error }));
 };
 
-// Get ALL 
-exports.getAllStuff = async (req, res, next) => {
+// Get ALL - OK
+exports.getAllSauces = async (req, res, next) => {
 
-  await Thing.find()
-  .then((things) => {res.status(200).json(things);})
+  await Sauce.find()
+  .then((sauces) => {res.status(200).json(sauces);})
   .catch((error) => {res.status(400).json({error: error});});
 
 /*
-  const stuff = [
+  const sauce = [
     {
       _id: 'oeihfzeoi',
       title: '1er objet',
@@ -81,7 +96,7 @@ exports.getAllStuff = async (req, res, next) => {
     },
   ];
 
-  res.status(200).json(stuff);
+  res.status(200).json(sauce);
 */
 };
 
