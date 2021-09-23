@@ -66,32 +66,7 @@ exports.getAllSauces = async (req, res, next) => {
   await Sauce.find()
   .then((sauces) => {res.status(200).json(sauces);})
   .catch((error) => {res.status(400).json({error: error});});
-
-/*
-  const sauce = [
-    {
-      _id: 'oeihfzeoi',
-      title: '1er objet',
-      description: 'Les infos de mon premier objet',
-      imageUrl: 'https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg',
-      price: 4900,
-      userId: 'qsomihvqios',
-    },
-    {
-      _id: 'oeihfzeomoihi',
-      title: '2eme objet',
-      description: 'Les infos de mon deuxième objet',
-      imageUrl: 'https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg',
-      price: 2900,
-      userId: 'qsomihvqios',
-    },
-  ];
-
-  res.status(200).json(sauce);
-*/
 };
-
-
 
 
 
@@ -146,6 +121,5 @@ exports.deleteSauce = (req, res, next) => {
     })
     .catch(error => res.status(500).json({ error }));
 };
-
 
 */
