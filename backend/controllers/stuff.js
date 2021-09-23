@@ -6,7 +6,7 @@ const Sauce = require('../models/sauce');
 
 // Les Controllers ------------------------------------------------------------------------------------
 
-// Post 1 - 
+// Post 1 - OK - mais initialise pas like etc
 exports.createSauce = async (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce); // thing ou sauce ? 
   delete sauceObject._id;
@@ -43,7 +43,7 @@ exports.getOneSauce = async (req, res, next) => {
   .catch((error) => {res.status(404).json({error: error});});
 };
 
-// Modify 1 - Put
+// Modify 1 - Put - OK
 exports.modifySauce = (req, res, next) => {
   const sauceObject = req.file ?
     {
@@ -55,7 +55,7 @@ exports.modifySauce = (req, res, next) => {
     .catch(error => res.status(400).json({ error }));
 };
 
-// Delete 1 
+// Delete 1 - OK
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then(thing => {
