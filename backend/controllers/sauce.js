@@ -18,15 +18,6 @@ exports.createSauce = async (req, res, next) => {
     .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
     .catch(error => res.status(400).json({ error }));
 };
-// ?
-/* 
-const sauce = new Sauce ({
-name : req.body.name,
-heat : req.body.heat,
-description: req.body.description,
-imageUrl: req.body.imageUrl,
-});
-*/
 
 // ??
 /* 
