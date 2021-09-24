@@ -18,7 +18,7 @@ exports.createSauce = async (req, res, next) => {
     // initialise like et dislikes à 0
     likes : 0, 
     dislikes : 0,
-    // initialise les tableaux
+    // initialise les tableaux - mais rien ne rentre dedans ?
     usersLiked : [],
     usersDisliked : [],
   }); 
@@ -27,7 +27,7 @@ exports.createSauce = async (req, res, next) => {
     .catch(error => res.status(400).json({ error }));
 };
 
-
+// POST Like - compter s'affiche à 1 mais ne s'enregistre pas et le tableau ne se met pas à jour
 exports.likeSauce = async (req, res, next) => {
 ///*
   const userLike = new likeSauce({
@@ -36,7 +36,7 @@ exports.likeSauce = async (req, res, next) => {
   })
 //*/
 ///*
-  await userLike.save()
+   await userLike.save()
     .then(() => res.status(201).json({ message: 'Avis sauce reçu !'}))
     .catch(error => res.status(400).json({ error }));
 };

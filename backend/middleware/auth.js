@@ -18,7 +18,7 @@ module.exports = (req, res, next) => {
     else {next();} // si c'est ok next on passe au middleware suivant correspondant à l'action demandé
   } 
 
-  catch {res.status(401).json({error: new Error('Invalid request!')});} 
+  catch {res.status(403).json({error: new Error('Unauthorized request!')});} // 403 ou 401 ?
 
 };
 

@@ -24,8 +24,8 @@ const thingSchema = mongoose.Schema({
   usersDisliked: { type: Array, required: true },  
 });
 
-
+// comment fonctionne le statut like ?
 
 // permet d'exporter le schéma et de le rendre exploitable par MongoDB
-module.exports = mongoose.model('Thing', thingSchema);
+module.exports = mongoose.model('Sauces', thingSchema);
 
