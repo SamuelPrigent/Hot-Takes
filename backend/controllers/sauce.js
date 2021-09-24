@@ -3,7 +3,6 @@
 // import modele uniquement dans controllers
 const fs = require('fs'); // fs permet delete img local pendant suppression objet
 const Sauce = require('../models/sauce');
-
 const likeSauce = require('../models/likeSauce');
 
 
@@ -30,19 +29,12 @@ exports.createSauce = async (req, res, next) => {
 
 
 exports.likeSauce = async (req, res, next) => {
-  /*
-  const sauceObject = JSON.parse(req.body.sauce);
-  const sauce = new Sauce({
-    ...sauceObject, 
-  }); 
-  */
-// ou
-
+///*
   const userLike = new likeSauce({
     like: req.body.like,
     userId: req.body.userId,
   })
-
+//*/
 ///*
   await userLike.save()
     .then(() => res.status(201).json({ message: 'Avis sauce reçu !'}))

@@ -1,7 +1,9 @@
 // JS Base de donnés MongoDB
+// const { stringify } = require("querystring");
 
 const mongoose = require("mongoose");
-// const { stringify } = require("querystring");
+// const uniqueValidator = require('mongoose-unique-validator'); // permet utilisation de unique pour les emails
+
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -11,6 +13,7 @@ const thingLike = mongoose.Schema({
   like: { type: Number, required: true }, 
 });
 
-// permet d'exporter le schéma et de le rendre exploitable par MongoDB
+
+// thingLike.plugin(uniqueValidator); // application du module avant de faire le modele
 module.exports = mongoose.model('userLike', thingLike);
 
