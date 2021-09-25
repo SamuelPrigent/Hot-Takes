@@ -10,8 +10,8 @@ const multer = require('../middleware/multer-config'); // module gestion d'impor
 // Import Controllers
 const sauceCtrl = require("../controllers/sauce") // Import Controller
 
-// Routes ici (importé ensuite dans l'app)  -----------------------------------------------------------------------------------
-// Auth peu être appliqué à toute les routes car même si pas d'userId à comparer cela n'invalidera pas 
+// Routes ici (importé ensuite dans l'app)  -------------------------------------------------------------------------------
+// Début des routes -> api/sauces
 
 router.get('/', auth, sauceCtrl.getAllSauces); // Get ALL
 router.get('/:id', auth, sauceCtrl.getOneSauce); // Get 1

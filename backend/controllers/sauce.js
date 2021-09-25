@@ -29,18 +29,17 @@ exports.createSauce = async (req, res, next) => {
 
 // POST Like - compter s'affiche à 1 mais ne s'enregistre pas et le tableau ne se met pas à jour
 exports.likeSauce = async (req, res, next) => {
-///*
+
   const userLike = new likeSauce({
     like: req.body.like,
     userId: req.body.userId,
   })
-//*/
-///*
-   await userLike.save()
+
+    await userLike.save()
     .then(() => res.status(201).json({ message: 'Avis sauce reçu !'}))
     .catch(error => res.status(400).json({ error }));
 };
-//*/
+
 
 // Get 1 - OK
 exports.getOneSauce = async (req, res, next) => {
@@ -136,3 +135,21 @@ exports.deleteSauce = (req, res, next) => {
 };
 
 */
+
+
+
+
+// hypothèses testé qui ne fonctionne pas pour le like
+
+// 1 - delete l'id automatique ?
+//const LikeObject = JSON.parse(req.body.sauce); // thing ou sauce ? 
+//delete LikeObject._id;
+//console.log(req.body.sauce)
+
+// 2 - fetch le nom pour ne pas post à chaque fois ? mais c'est une requete post ??
+// const urlParams = new URLSearchParams(window.location.search);
+// const idProduct = urlParams.slice(28); 
+// fetch = ("http://localhost:3000/api/sauce/idProduct");
+// console.log(fetch.name) 
+
+// 3 - 

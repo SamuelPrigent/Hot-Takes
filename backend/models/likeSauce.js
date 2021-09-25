@@ -13,7 +13,7 @@ const thingLike = mongoose.Schema({
   like: { type: Number, required: true }, 
 });
   
-// Notes 
+// données de la requête 
 /*
 _id : Object Id = jamais le même d'ou ça vient ?
 userId : toujours le même
