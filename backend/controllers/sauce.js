@@ -3,7 +3,9 @@
 // import modele uniquement dans controllers
 const fs = require('fs'); // fs permet delete img local pendant suppression objet
 const Sauce = require('../models/sauce');
-const likeSauce = require('../models/likeSauce');
+
+const likeSauce = require('../models/likeSauce'); // new likeSauce présent dans ancien code
+const sauce = require('../models/sauce');
 
 
 // Les Controllers ------------------------------------------------------------------------------------
@@ -28,8 +30,8 @@ exports.createSauce = async (req, res, next) => {
 };
 
 // POST Like - compter s'affiche à 1 mais ne s'enregistre pas et le tableau ne se met pas à jour
-exports.likeSauce = async (req, res, next) => {
-
+///*
+exports.likeStatus = async (req, res, next) => {
   const userLike = new likeSauce({
     like: req.body.like,
     userId: req.body.userId,
@@ -39,6 +41,66 @@ exports.likeSauce = async (req, res, next) => {
     .then(() => res.status(201).json({ message: 'Avis sauce reçu !'}))
     .catch(error => res.status(400).json({ error }));
 };
+//*/
+
+// -----------------------------CODE LIKE ICI ------------------------------------------------------
+
+/*
+exports.likeStatus = (req, res, next) => {
+
+const likeValue = req.body.like; 
+const userID = req.body.userId;
+
+// ??  // const SauceID = req.params.id; // l'utiliser ?
+// Je n'utilise plus modèle données qui exporte requete ? : // const userLike = new likeSauce({
+
+
+    Sauce.findOne({ _id : req.params.id }).then (sauce => {
+
+      // Like
+      if (likeValue === 1 && !sauce.usersLiked.includes(userID)) {
+        sauce.updateOne( { _id: req.params.id }, {$push: { usersLiked : userID }}, {$inc: { likes : 1 }} );
+        sauce.then( () => {res.status(200).json( {message : "Like !"} ) } );
+        sauce.catch( (error) => {res.status(500).json( { error: error} ) } );
+      };
+    
+      // Dislike
+      if (likeValue === -1 && !sauce.usersDisliked.includes(userID)) {
+        sauce.updateOne( { _id: req.params.id }, {$push: { usersDisliked : userID }}, {$inc: { dislikes : 1 }} );
+        sauce.then( () => {res.status(200).json( {message : "Dislike !"} ) } );
+        sauce.catch( (error) => {res.status(500).json( { error: error} ) } );
+      }
+  
+      // Cancel Like
+       if (likeValue === 0 && !sauce.usersLiked.includes(userID)) { 
+        sauce.updateOne( { _id: req.params.id }, {$pull: { usersLiked : userID }}, {$inc: { likes : -1 }} );
+        sauce.then( () => {res.status(200).json( {message : "Cancel Like !"} ) } );
+        sauce.catch( (error) => {res.status(500).json( { error: error} ) } );
+      };
+
+      // Cancel Dislike
+       if (likeValue === 0 && !sauce.usersDisliked.includes(userID)) { 
+        sauce.updateOne( { _id: req.params.id }, {$pull: { usersDisliked : userID }}, {$inc: { dislikes : -1 }} );
+        sauce.then( () => {res.status(200).json( {message : "Cancel Dislike !"} ) } );
+        sauce.catch( (error) => {res.status(500).json( { error: error} ) } );
+        };
+
+    }) 
+
+    .catch(error => res.status(400).json({ error }));
+
+  }
+  */
+  
+
+
+
+
+
+// -----------------------------CODE LIKE ICI ------------------------------------------------------
+
+
+
 
 
 // Get 1 - OK
@@ -86,60 +148,7 @@ exports.getAllSauces = async (req, res, next) => {
 
 // ----------------------------------------------------------------------------------------------------------------
 
-/* 1ère versions des requetes sans mudler 
-
-// Post 1
-exports.createSauce = async (req, res, next) => {
-    
-  const sauce = new Sauce({
-    title: req.body.title,
-    description: req.body.description,
-    imageUrl: req.body.imageUrl,
-    price: req.body.price,
-    userId: req.body.userId
-  });
-  await sauce.save()
-  .then(() => {res.status(201).json({message: 'Post saved successfully!'});})
-  .catch((error) => {res.status(500).json({error: error});});
-  
-};
-
-// Modify 1
-exports.modifySauce = async (req, res, next) => {
-    
-  const sauce = new Sauce({
-    _id: req.params.id,
-    title: req.body.title,
-    description: req.body.description,
-    imageUrl: req.body.imageUrl,
-    price: req.body.price,
-    userId: req.body.userId
-  });
-  await Sauce.updateOne({_id: req.params.id}, sauce)
-  .then(() => {res.status(201).json({message: 'Sauce updated successfully!'});})
-  .catch((error) => {res.status(400).json({error: error});});
-};
-
-// Delete 1
-exports.deleteSauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params.id })
-    .then(sauce => {
-      const filename = sauce.imageUrl.split('/images/')[1];
-      fs.unlink(`images/${filename}`, () => {
-        Sauce.deleteOne({ _id: req.params.id })
-          .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
-          .catch(error => res.status(400).json({ error }));
-      });
-    })
-    .catch(error => res.status(500).json({ error }));
-};
-
-*/
-
-
-
-
-// hypothèses testé qui ne fonctionne pas pour le like
+// hypothèses simple testé qui ne fonctionne pas pour le like
 
 // 1 - delete l'id automatique ?
 //const LikeObject = JSON.parse(req.body.sauce); // thing ou sauce ? 
@@ -152,4 +161,23 @@ exports.deleteSauce = (req, res, next) => {
 // fetch = ("http://localhost:3000/api/sauce/idProduct");
 // console.log(fetch.name) 
 
-// 3 - 
+
+// Anciens code - POST Like - compter s'affiche à 1 mais ne s'enregistre pas et le tableau ne se met pas à jour
+/*
+exports.likeStatus = async (req, res, next) => {
+
+  const userLike = new likeSauce({
+    like: req.body.like,
+    userId: req.body.userId,
+  })
+
+    await userLike.save()
+    .then(() => res.status(201).json({ message: 'Avis sauce reçu !'}))
+    .catch(error => res.status(400).json({ error }));
+};
+*/
+
+
+
+
+

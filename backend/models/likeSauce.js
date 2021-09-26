@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 // ---------------------------------------------------------------------------------------------------------------------
 
 // Schéma d'une sauce
-const thingLike = mongoose.Schema({
+const likeSauce = mongoose.Schema({
   userId: { type: String, required: true }, 
   like: { type: Number, required: true }, 
 });
@@ -16,15 +16,19 @@ const thingLike = mongoose.Schema({
 // données de la requête 
 /*
 _id : Object Id = jamais le même d'ou ça vient ?
-userId : toujours le même
-like = 1 / 0 ou -1
-
--> Il faudrait rajouter le name de la sauce auquel le like s'applique / comment récup le nom ?
+hypothèse -> Recup name de la sauce auquel le like s'applique ??
 
 */
 
 
+// likeSauce.plugin(uniqueValidator); // application du module avant de faire le modele
+module.exports = mongoose.model('saucesLikes', likeSauce); 
 
-// thingLike.plugin(uniqueValidator); // application du module avant de faire le modele
-module.exports = mongoose.model('saucesLikes', thingLike); 
+// !!
+// Avant 
+// module.exports = mongoose.model('saucesLikes', likeSauce); 
+// Devrait être ?
+// module.exports = mongoose.model('sauces', likeSauce); 
+
+
 
