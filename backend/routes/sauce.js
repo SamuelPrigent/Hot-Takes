@@ -23,9 +23,6 @@ router.put('/:id', auth, multer, sauceCtrl.modifySauce); // modify 1
 router.delete('/:id', auth, sauceCtrl.deleteSauce); // Delete 1 
 
 
-// Si j'enleve auth de get all / get 1 / put 1 / je pourrais modifier les objets via Insomnia si pas de code pour vérif
-
-
 // fin de code
 module.exports = router;
 

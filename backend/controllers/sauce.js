@@ -103,7 +103,7 @@ exports.getOneSauce = async (req, res, next) => {
 };
 
 
-// Modify - PUT - sécurisé ++
+// Modify - PUT - Sécurité = Vérification de l'userId
 ///*
 exports.modifySauce = async (req, res, next) => {
 
@@ -142,8 +142,7 @@ const sauceObject = req.file
 
 };
 
-
-// Delete 1 - OK - supprime correctement le fichier ?
+// Delete 1 - OK - Sécurité = Vérification de l'userId
 exports.deleteSauce = async (req, res, next) => {
 
 // import de sécurité pour comparé le token
@@ -181,8 +180,6 @@ if (req.body.userId == userId) { // si on change == en !== on voit que l'action 
     .catch(error => res.status(500).json({ error }));
 
 };
-
-
 
 
 
