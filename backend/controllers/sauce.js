@@ -25,23 +25,10 @@ exports.createSauce = async (req, res, next) => {
     .catch(error => res.status(400).json({ error }));
 };
 
-// POST Like - compter s'affiche à 1 mais ne s'enregistre pas et le tableau ne se met pas à jour
-/*
-exports.likeStatus = async (req, res, next) => {
-  const userLike = new likeSauce({
-    like: req.body.like,
-    userId: req.body.userId,
-  })
+// POST Like - OK
 
-    await userLike.save()
-    .then(() => res.status(201).json({ message: 'Avis sauce reçu !'}))
-    .catch(error => res.status(400).json({ error }));
-};
-*/
+// ----------------------------- DEBUT CODE LIKE ICI ------------------------------------------------------
 
-// -----------------------------CODE LIKE ICI ------------------------------------------------------
-
-///*
 exports.likeStatus = async (req, res, next) => {
 
 const likeValue = req.body.like; 
@@ -105,13 +92,7 @@ catch (error) { res.status(400).json( { error } );}
 
 } // fin middleware
 
-
-
-
-// -----------------------------CODE LIKE ICI ------------------------------------------------------
-
-
-
+// -----------------------------FIN CODE LIKE ICI ------------------------------------------------------
 
 
 // Get 1 - OK
@@ -121,31 +102,89 @@ exports.getOneSauce = async (req, res, next) => {
   .catch((error) => {res.status(404).json({error: error});});
 };
 
-// Modify 1 - Put - OK
-exports.modifySauce = (req, res, next) => {
-  const sauceObject = req.file ?
-    {
-      ...JSON.parse(req.body.sauce), 
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    } : { ...req.body };
+
+// Modify - PUT - sécurisé ++
+///*
+exports.modifySauce = async (req, res, next) => {
+
+// import de sécurité pour comparé le token
+const jwt = require('jsonwebtoken');
+const token = req.headers.authorization.split(' ')[1]; // on récupère le token d'auth de connection
+const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET'); // Verify Token récup / stocké
+const userId = decodedToken.userId; // on récup userId de la requette mais décodé
+
+// const sauce
+const sauce =   await Sauce.findOne({_id: req.params.id});
+
+// Objet introuvable
+if (!sauce) {
+  res.status(404).json({ message: 'Objet introuvable !'});
+  return;
+}
+
+// Modification non autorisé = L'utilisateur PUT n'est pas celui qui a POST 
+if (req.body.userId !== userId) { // si on change !== en == on voit que l'action est non autorisé
+  res.status(403).json({ message: 'Action non autorisée !'});
+  return;  
+}
+
+// Code de modification de l'objet
+const sauceObject = req.file 
+  ? {
+    ...JSON.parse(req.body.sauce), 
+    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+    } 
+  : { ...req.body };
+
     Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id }) 
     .then(() => res.status(200).json({ message: 'Objet modifié !'}))
     .catch(error => res.status(400).json({ error }));
+
 };
 
+
 // Delete 1 - OK - supprime correctement le fichier ?
-exports.deleteSauce = (req, res, next) => {
+exports.deleteSauce = async (req, res, next) => {
+
+// import de sécurité pour comparé le token
+const jwt = require('jsonwebtoken');
+const token = req.headers.authorization.split(' ')[1]; // on récupère le token d'auth de connection
+const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET'); // Verify Token récup / stocké
+const userId = decodedToken.userId; // on récup userId de la requette mais décodé
+
+// const sauce
+const sauce =  await Sauce.findOne({_id: req.params.id});
+
+// Objet introuvable
+if (!sauce) {
+  res.status(404).json({ message: 'Objet introuvable !'});
+  return;
+}
+
+// Delete autorisé = L'utilisateur DELETE est celui qui a POST 
+if (req.body.userId == userId) { // si on change == en !== on voit que l'action est non autorisé
+  res.status(403).json({ message: 'Action non autorisée !'});
+  return;  
+}
+
+// Code de supression de l'objet
   Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
       const filename = sauce.imageUrl.split('/images/')[1];
       fs.unlink(`images/${filename}`, () => {
-        Sauce.deleteOne({ _id: req.params.id })
+        
+    Sauce.deleteOne({ _id: req.params.id })
           .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
           .catch(error => res.status(400).json({ error }));
       });
     })
     .catch(error => res.status(500).json({ error }));
+
 };
+
+
+
+
 
 // Get ALL - OK
 exports.getAllSauces = async (req, res, next) => {
@@ -159,7 +198,28 @@ exports.getAllSauces = async (req, res, next) => {
 
 // ----------------------------------------------------------------------------------------------------------------
 
+// Pour tester la sécurité back end du modify ou delete : 
+/*
+1 - Enlever le middleware auth de 3 routes = (get ALL / get 1 / put 1)
+2 - Essayer une requette PUT via Postman pour modifier l'objet 
+3 - La requette sera envoyé sans le middleware sécurisé car elle ne vérifie pas 
+si la requette viens du même userId que celui qui a post la sauce
+*/
 
+// Code modify non sécurisé
+/*
+exports.modifySauce = (req, res, next) => {
 
+  const sauceObject = req.file ?
+    {
+      ...JSON.parse(req.body.sauce), 
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    } : { ...req.body };
 
+    Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id }) 
+    .then(() => res.status(200).json({ message: 'Objet modifié !'}))
+    .catch(error => res.status(400).json({ error }));
+
+};
+*/
 
