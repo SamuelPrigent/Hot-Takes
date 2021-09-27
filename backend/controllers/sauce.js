@@ -4,7 +4,6 @@
 const fs = require('fs'); // fs permet delete img local pendant suppression objet
 const Sauce = require('../models/sauce');
 
-
 // Les Controllers ------------------------------------------------------------------------------------
 
 // Post 1 - OK
@@ -58,8 +57,7 @@ try {
       if (!sauce.usersLiked.includes(userID) ) {
         await Sauce.updateOne(
           { _id: SauceID }, 
-          {$push: { usersLiked : userID }}, 
-          {$inc: { likes : 1 }}
+          { $push: { usersLiked : userID }, $inc: { likes : 1 } }
         )
         res.status(200).json( {message : "Like !"}); 
         break;
@@ -70,8 +68,7 @@ try {
       if (!sauce.usersDisliked.includes(userID) ) {
         await Sauce.updateOne(
           { _id: SauceID }, 
-          {$push: { usersDisliked : userID }}, 
-          {$inc: { dislikes : 1 }}
+          {$push: { usersDisliked : userID }, $inc: { dislikes : 1 } }
         )
         res.status(200).json( {message : "Dislike !"});
         break;
@@ -82,8 +79,7 @@ try {
       if (sauce.usersLiked.includes(userID) ) {
         await Sauce.updateOne(
           { _id: SauceID }, 
-          {$pull: { usersLiked : userID }}, 
-          {$inc: { likes : -1 }}
+          {$pull: { usersLiked : userID }, $inc: { likes : -1 } }
         )
         res.status(200).json( {message : "Cancel Like !"}); 
         break;
@@ -94,8 +90,7 @@ try {
       if (sauce.usersDisliked.includes(userID) ) {
          await Sauce.updateOne(
           { _id: SauceID }, 
-          {$pull: { usersDisliked : userID }}, 
-          {$inc: { dislikes : -1 }}
+          {$pull: { usersDisliked : userID }, $inc: { dislikes : -1 } }
         )
         res.status(200).json( {message : "Cancel Dislike !"}); 
         break;
