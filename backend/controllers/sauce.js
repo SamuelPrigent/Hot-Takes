@@ -107,14 +107,14 @@ exports.getOneSauce = async (req, res, next) => {
 ///*
 exports.modifySauce = async (req, res, next) => {
 
-// import de sécurité pour comparé le token
+// import de sécurité pour comparer le token
 const jwt = require('jsonwebtoken');
 const token = req.headers.authorization.split(' ')[1]; // on récupère le token d'auth de connection
 const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET'); // Verify Token récup / stocké
 const userId = decodedToken.userId; // on récup userId de la requette mais décodé
 
 // const sauce
-const sauce =   await Sauce.findOne({_id: req.params.id});
+const sauce = await Sauce.findOne({_id: req.params.id});
 
 // Objet introuvable
 if (!sauce) {
@@ -139,20 +139,21 @@ const sauceObject = req.file
     Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id }) 
     .then(() => res.status(200).json({ message: 'Objet modifié !'}))
     .catch(error => res.status(400).json({ error }));
-
 };
+
+
 
 // Delete 1 - OK - Sécurité = Vérification de l'userId
 exports.deleteSauce = async (req, res, next) => {
-
-// import de sécurité pour comparé le token
+  
+// import de sécurité pour comparer le token
 const jwt = require('jsonwebtoken');
 const token = req.headers.authorization.split(' ')[1]; // on récupère le token d'auth de connection
 const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET'); // Verify Token récup / stocké
 const userId = decodedToken.userId; // on récup userId de la requette mais décodé
 
 // const sauce
-const sauce =  await Sauce.findOne({_id: req.params.id});
+const sauce = await Sauce.findOne({_id: req.params.id});
 
 // Objet introuvable
 if (!sauce) {
@@ -161,24 +162,23 @@ if (!sauce) {
 }
 
 // Delete autorisé = L'utilisateur DELETE est celui qui a POST 
-if (req.body.userId == userId) { // si on change == en !== on voit que l'action est non autorisé
+if (req.userId !== userId) { // si on change == en !== on voit que l'action est non autorisé
   res.status(403).json({ message: 'Action non autorisée !'});
   return;  
 }
 
 // Code de supression de l'objet
   Sauce.findOne({ _id: req.params.id })
-    .then(sauce => {
-      const filename = sauce.imageUrl.split('/images/')[1];
+   .then(sauce => {
+    const filename = sauce.imageUrl.split('/images/')[1];
       fs.unlink(`images/${filename}`, () => {
         
-    Sauce.deleteOne({ _id: req.params.id })
+        Sauce.deleteOne({ _id: req.params.id })
           .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
           .catch(error => res.status(400).json({ error }));
       });
     })
     .catch(error => res.status(500).json({ error }));
-
 };
 
 

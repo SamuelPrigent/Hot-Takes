@@ -15,7 +15,9 @@ module.exports = (req, res, next) => {
     
     // On check si l'userId correspond à l'userId voulu 
     if (req.body.userId && req.body.userId !== userId) {throw 'Invalid user ID';} 
-    else {next();} // si c'est ok next on passe au middleware suivant correspondant à l'action demandé
+    else {
+      req.userId =  userId
+      next();} // si ok next passe au middleware
   } 
 
   catch {res.status(403).json({error: new Error('Unauthorized request!')});} // 403 ou 401 ?
